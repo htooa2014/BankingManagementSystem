@@ -1,0 +1,80 @@
+﻿@model TownshipModel
+@* <form action="/Blog/Update/@Model.BlogId" method="post"> *@
+<div>
+    <label class="form-label">Township Code</label>
+    <input type="text" class="form-control" id="TownshipCode" value="@Model.TownshipCode" name="TownshipCode" />
+</div>
+<div>
+    <label class="form-label">Township Name</label>
+    <input type="text" class="form-control" id="TownshipName" value="@Model.TownshipName" name="TownshipName" />
+</div>
+<div>
+    <label class="form-label">State Code</label>
+    <input type="text" class="form-control" id="StateCode" value="@Model.StateCode" name="StateCode" />
+</div>
+<a href="/Township" class="btn btn-dark">Back</a>
+
+<button type="button" class="btn btn-success" id="btnUpdate">Update</button>
+@* </form> *@
+
+@section scripts {
+    <script>
+        // alert('');
+        $('#btnUpdate').click(function () {
+            let code = $('#TownshipCode').val();
+            let name = $('#TownshipName').val();
+            let stateCode = $('#StateCode').val();
+          
+
+            let _requestModel = {
+                TownshipCode: code,
+                TownshipName: name,
+                StateCode: stateCode,
+            };
+            // if JSON.stringify, need  contentType
+            $.ajax({
+                url: "/Township/Update/" + @Model.TownshipId,
+                data: { township: _requestModel },
+                // data: JSON.stringify(_requestModel),
+                type: "POST",
+                // contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+                    if (result.IsSuccess) {
+
+
+
+                        Swal.fire({
+                            title: "Success",
+                            text: result.Message,
+                            icon: "success",
+
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.href = "/Township";
+                            }
+                        });
+
+
+
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Error",
+                            text: result.Message,
+                            icon: "error"
+                        });
+                    }
+
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+
+                }
+            });
+
+        })
+    </script>
+}

@@ -1,0 +1,85 @@
+﻿@model AccountModel
+@* <form action="/Blog/Update/@Model.BlogId" method="post"> *@
+<div>
+    <label class="form-label">Account No.</label>
+    <input type="text" class="form-control" id="AccountNo" value="@Model.AccountNo" name="AccountNo" />
+</div>
+<div>
+    <label class="form-label">Customer Code</label>
+    <input type="text" class="form-control" id="CustomerCode" disabled="true" value="@Model.CustomerCode" name="CustomerCode" />
+</div>
+<div>
+    <label class="form-label">Customer Name</label>
+    <input type="text" class="form-control" id="CustomerName" value="@Model.CustomerName" name="CustomerName" />
+</div>
+<div>
+    <label class="form-label">Balance</label>
+    <input type="text" class="form-control" id="Balance" value="@Model.Balance" name="Balance" />
+</div>
+<a href="/Account" class="btn btn-dark">Back</a>
+
+<button type="button" class="btn btn-success" id="btnUpdate">Update</button>
+@* </form> *@
+
+@section scripts {
+    <script>
+        // alert('');
+        $('#btnUpdate').click(function () {
+            let accountNo = $('#AccountNo').val();
+            let customerCode = $('#CustomerCode').val();
+            let customerName = $('#CustomerName').val();
+            let balance = $('#Balance').val();
+
+            let _requestModel = {
+                AccountNo: accountNo,
+                CustomerCode: customerCode,
+                CustomerName: customerName,
+                Balance: balance,
+            };
+            // if JSON.stringify, need  contentType
+            $.ajax({
+                url: "/Account/Update/" + @Model.AccountId,
+                data: { account: _requestModel },
+                // data: JSON.stringify(_requestModel),
+                type: "POST",
+                // contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+                    if (result.IsSuccess) {
+
+
+
+                        Swal.fire({
+                            title: "Success",
+                            text: result.Message,
+                            icon: "success",
+
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.href = "/Account";
+                            }
+                        });
+
+
+
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Error",
+                            text: result.Message,
+                            icon: "error"
+                        });
+                    }
+
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+
+                }
+            });
+
+        })
+    </script>
+}

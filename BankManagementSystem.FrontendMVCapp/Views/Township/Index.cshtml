@@ -1,0 +1,122 @@
+﻿@model List<TownshipModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Township";
+    int count = 0;
+}
+<h4>Township</h4>
+<a href="/Township/Create" class="btn btn-success">New</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th scope="col">#</th>
+            <th scope="col">Code</th>
+            <th scope="col">Name</th>
+            <th scope="col">State</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (TownshipModel item in Model)
+        {
+            <tr>
+                <td>
+                    <a href="/Township/Edit/@item.TownshipId" class="btn btn-warning">Edit</a>
+                    @*  <a href="/BlogAjax/Delete/@item.BlogId" class="btn btn-danger">Delete</a> *@
+                    <buton typeof="button" class="btn btn-danger btn-Delete" data-blog-id="@item.TownshipId" data-id="@item.TownshipId">Delete</buton>
+                </td>
+                <th scope="row"> @(++count) </th>
+                <td>@item.TownshipCode</td>
+                <td>@item.TownshipName</td>
+                <td>@item.StateCode</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+@* $('.btn-Delete').data('blog-id')
+$('.btn-Delete').data('id') *@
+@section scripts {
+    <script>
+        // alert('');
+        $('.btn-Delete').click(function () {
+
+            let id = $(this).data('blog-id');
+
+            //Confirmation
+            Swal.fire({
+                title: "Confirm?",
+                text: "Are you sure to delete",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Yes"
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+
+                    deleteTownship(id);
+
+
+                }
+            });
+
+
+
+
+
+
+
+        })
+
+
+                function deleteTownship(id) {
+                let _requestModel = {
+                    TownshipId: id
+                };
+                // if JSON.stringify, need  contentType
+                $.ajax({
+                url: "/Township/Delete",
+                    data: { township: _requestModel },
+                    // data: JSON.stringify(_requestModel),
+                    type: "POST",
+                    // contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        //console.log(result);
+                        if (result.IsSuccess) {
+
+
+
+                            Swal.fire({
+                                title: "Success",
+                                text: result.Message,
+                                icon: "success",
+
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+
+                                    location.href = "/Township";
+                                }
+                            });
+
+
+
+                        }
+                        else {
+                            Swal.fire({
+                                title: "Error",
+                                text: result.Message,
+                                icon: "error"
+                            });
+                        }
+
+                    },
+                    error: function (errormessage) {
+                        console.log(errormessage);
+
+                    }
+                });
+
+                }
+    </script>
+}

@@ -1,0 +1,124 @@
+﻿@model List<AccountModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Account";
+    int count = 0;
+}
+<h4>Account</h4>
+<a href="Account/Create" class="btn btn-success">New</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th scope="col">#</th>
+            <th scope="col">Account No.</th>
+            <th scope="col">Customer Code</th>
+            <th scope="col">Customer Name</th>
+            <th scope="col">Balance</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (AccountModel item in Model)
+        {
+            <tr>
+                <td>
+                    @*<a href="/Account/Edit/@item.AccountId" class="btn btn-warning">Edit</a>*@
+                @*<a href="/BlogAjax/Delete/@item.BlogId" class="btn btn-danger">Delete</a>*@
+                @*<buton typeof="button" class="btn btn-danger btn-Delete" data-account-id=" @item.AccountId" data-id=" @item.AccountId">Delete</buton>*@
+                </td>
+                <th scope="row"> @(++count) </th>
+                <td>@item.AccountNo</td>
+                <td>@item.CustomerCode</td>
+                <td>@item.CustomerName</td>
+                <td>@item.Balance</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+@* $('.btn-Delete').data('blog-id')
+$('.btn-Delete').data('id') *@
+@section scripts {
+    <script>
+        // alert('');
+        $('.btn-Delete').click(function () {
+
+            let id = $(this).data('account-id');
+
+            //Confirmation
+            Swal.fire({
+                title: "Confirm?",
+                text: "Are you sure to delete",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Yes"
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+
+                    deleteAccount(id);
+
+
+                }
+            });
+
+
+
+
+
+
+
+        })
+
+
+                function deleteAccount(id) {
+                let _requestModel = {
+                    AccuntId: id
+                };
+                // if JSON.stringify, need  contentType
+                $.ajax({
+                url: "/Account/Delete",
+                    data: { account: _requestModel },
+                    // data: JSON.stringify(_requestModel),
+                    type: "POST",
+                    // contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        //console.log(result);
+                        if (result.IsSuccess) {
+
+
+
+                            Swal.fire({
+                                title: "Success",
+                                text: result.Message,
+                                icon: "success",
+
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+
+                                    location.href = "/Account";
+                                }
+                            });
+
+
+
+                        }
+                        else {
+                            Swal.fire({
+                                title: "Error",
+                                text: result.Message,
+                                icon: "error"
+                            });
+                        }
+
+                    },
+                    error: function (errormessage) {
+                        console.log(errormessage);
+
+                    }
+                });
+
+                }
+    </script>
+}

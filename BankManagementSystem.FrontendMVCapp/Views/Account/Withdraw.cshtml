@@ -1,0 +1,79 @@
+﻿@model AccountModel
+@* <form action="/Blog/Save" method="post"> *@
+<div>
+    <label class="form-label">Account No</label>
+    @* <input type="text" class="form-control" id="AccountNo" name="AccountNo" /> *@
+    @Html.DropDownListFor(x => x.AccountId, new SelectList(ViewBag.Accounts, "AccountId", "AccountNo"), "Please select account code.")
+</div>
+<div>
+    <label class="form-label">Withdraw Amount</label>
+    <input type="text" class="form-control" id="Balance" name="Balance" />
+</div>
+
+<a href="/Account" class="btn btn-dark">Back</a>
+@* change button type from submit to button *@
+@* and set butoon id for ajax *@
+<button type="button" class="btn btn-success" id="btnSave">Save</button>
+@* </form> *@
+@section scripts {
+    <script>
+        // alert('');
+        $('#btnSave').click(function () {
+            let accountId = $("#AccountId").val();
+            let accountNo = $('#AccountId :selected').text();
+            let balance = $('#Balance').val();
+
+           // alert(accountNo);
+
+            let _requestModel = {
+                AccountNo: accountNo,
+                Balance: balance
+
+            };
+            // if JSON.stringify, need  contentType
+            $.ajax({
+                url: "/Account/WithdrawAccount/" + accountId,
+                data: { account: _requestModel },
+                // data: JSON.stringify(_requestModel),
+                type: "POST",
+                // contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+                    if (result.IsSuccess) {
+
+
+
+                        Swal.fire({
+                            title: "Success",
+                            text: result.Message,
+                            icon: "success",
+
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.href = "/Account";
+                            }
+                        });
+
+
+
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Error",
+                            text: result.Message,
+                            icon: "error"
+                        });
+                    }
+
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+
+                }
+            });
+
+        })
+    </script>
+}

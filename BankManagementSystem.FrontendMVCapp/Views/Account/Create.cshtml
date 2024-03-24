@@ -1,0 +1,87 @@
+﻿@model AccountModel
+@* <form action="/Blog/Save" method="post"> *@
+<div>
+    <label class="form-label">Account No</label>
+    <input type="text" class="form-control" id="AccountNo" name="AccountNo" />
+</div>
+<div>
+    <label class="form-label">Customer Code</label>
+    <input type="text" class="form-control" disabled="true" id="CustomerCode" name="CustomerCode" />
+</div>
+<div>
+    <label class="form-label">Customer Name</label>
+    <input type="text" class="form-control" id="CustomerName" name="CustomerName" />
+</div>
+<div>
+    <label class="form-label">Balance</label>
+    <input type="text" class="form-control" id="Balance" name="Balance" />
+</div>
+
+<a href="/Account" class="btn btn-dark">Back</a>
+@* change button type from submit to button *@
+@* and set butoon id for ajax *@
+<button type="button" class="btn btn-success" id="btnSave">Save</button>
+@* </form> *@
+@section scripts {
+    <script>
+        // alert('');
+        $('#btnSave').click(function () {
+            let accountNo = $('#AccountNo').val();
+            let customerCode = $('#CustomerCode').val();
+            let customerName = $('#CustomerName').val();
+            let balance = $('#Balance').val();
+
+            let _requestModel = {
+                AccountNo: accountNo,
+                CustomerCode: customerCode,
+                CustomerName: customerName,
+                Balance: balance
+                
+            };
+            // if JSON.stringify, need  contentType
+            $.ajax({
+                url: "/Account/Save",
+                data: { account: _requestModel },
+                // data: JSON.stringify(_requestModel),
+                type: "POST",
+                // contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+                    if (result.IsSuccess) {
+
+
+
+                        Swal.fire({
+                            title: "Success",
+                            text: result.Message,
+                            icon: "success",
+
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.href = "/Account";
+                            }
+                        });
+
+
+
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Error",
+                            text: result.Message,
+                            icon: "error"
+                        });
+                    }
+
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+
+                }
+            });
+
+        })
+    </script>
+}

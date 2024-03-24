@@ -1,0 +1,76 @@
+﻿@model StateModel
+@* <form action="/Blog/Save" method="post"> *@
+<div>
+    <label class="form-label">State Code</label>
+    <input type="text" class="form-control" id="StateCode" name="StateCode" />
+</div>
+<div>
+    <label class="form-label">State Name</label>
+    <input type="text" class="form-control" id="StateName" name="StateName" />
+</div>
+
+<a href="/State" class="btn btn-dark">Back</a>
+@* change button type from submit to button *@
+@* and set butoon id for ajax *@
+<button type="button" class="btn btn-success" id="btnSave">Save</button>
+@* </form> *@
+@section scripts {
+    <script>
+        // alert('');
+        $('#btnSave').click(function () {
+            let code = $('#StateCode').val();
+            let name = $('#StateName').val();
+         
+
+            let _requestModel = {
+                StateCode: code,
+                StateName: name,
+                
+            };
+            // if JSON.stringify, need  contentType
+            $.ajax({
+                url: "/State/Save",
+                data: { state: _requestModel },
+                // data: JSON.stringify(_requestModel),
+                type: "POST",
+                // contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+                    if (result.IsSuccess) {
+
+
+
+                        Swal.fire({
+                            title: "Success",
+                            text: result.Message,
+                            icon: "success",
+
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.href = "/State";
+                            }
+                        });
+
+
+
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Error",
+                            text: result.Message,
+                            icon: "error"
+                        });
+                    }
+
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+
+                }
+            });
+
+        })
+    </script>
+}

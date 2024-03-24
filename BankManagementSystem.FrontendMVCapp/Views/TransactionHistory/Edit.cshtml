@@ -1,0 +1,105 @@
+﻿@model TransactionHistoryModel
+@* <form action="/Blog/Update/@Model.BlogId" method="post"> *@
+<div>
+    <label class="form-label">From Account No.</label>
+   @*  <input type="text" class="form-control" id="FromAccountNo" value="@Model.FromAccountNo" name="FromAccountNo" /> *@
+    @Html.DropDownList("FromAccountCode")
+</div>
+<div>
+    <label class="form-label">To Account No.</label>
+    @* <input type="text" class="form-control" id="ToAccountNo" value="@Model.ToAccountNo" name="ToAccountNo" /> *@
+    @Html.DropDownList("ToAccountCode")
+</div>
+<div>
+    <label class="form-label">Transaction Date</label>
+    <input type="text" class="form-control" id="TransactionDate" value="@Model.TransactionDate.ToString("dd/MM/yyyy")" name="TransactionDate" />
+</div>
+<div>
+    <label class="form-label">Amount</label>
+    <input type="text" class="form-control" id="Amount" value="@Model.Amount" name="Amount" />
+</div>
+
+<a href="/TransactionHistory" class="btn btn-dark">Back</a>
+
+<button type="button" class="btn btn-success" id="btnUpdate">Update</button>
+@* </form> *@
+
+@section scripts {
+    <script>
+
+        $("#TransactionDate").datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy"
+        });
+
+
+        // alert('');
+        $('#btnUpdate').click(function () {
+            // let fromCode = $('#FromAccountCode').val();
+            // let toCode = $('#ToAccountCode').val();
+
+            let fromCode = $('#FromAccountCode :selected').text();
+            let toCode = $('#ToAccountCode :selected').text();
+
+            let transactionDate = $('#TransactionDate').val();
+
+            var dateAr = transactionDate.split('/');
+            var newDate = dateAr[2] + '/' + dateAr[1] + '/' + dateAr[0].slice(-2);
+
+            let amount = $('#Amount').val();
+
+
+            let _requestModel = {
+                FromAccountNo: fromCode,
+                ToAccountNo: toCode,
+                TransactionDate: newDate,
+                Amount: amount
+
+            };
+            // if JSON.stringify, need  contentType
+            $.ajax({
+                url: "/TransactionHistory/Update/" + @Model.TransactionHistoryId,
+                data: { transaction: _requestModel },
+                // data: JSON.stringify(_requestModel),
+                type: "POST",
+                // contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+                    if (result.IsSuccess) {
+
+
+
+                        Swal.fire({
+                            title: "Success",
+                            text: result.Message,
+                            icon: "success",
+
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.href = "/TransactionHistory";
+                            }
+                        });
+
+
+
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Error",
+                            text: result.Message,
+                            icon: "error"
+                        });
+                    }
+
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+
+                }
+            });
+
+        })
+    </script>
+}

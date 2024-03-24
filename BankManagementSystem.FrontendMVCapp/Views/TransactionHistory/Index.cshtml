@@ -1,0 +1,127 @@
+﻿@model List<TransactionHistoryModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Transaction";
+    int count = 0;
+}
+<h4>Transaction</h4>
+@* <a href="/TransactionHistory/Create" class="btn btn-success">New</a> *@
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th scope="col">#</th>
+            <th scope="col">From Account No.</th>
+            <th scope="col">To Account No.</th>           
+            <th scope="col">Transaction Date</th>
+            <th scope="col">Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (TransactionHistoryModel item in Model)
+        {
+            <tr>
+                <td>
+                   @*   <a href="/TransactionHistory/Edit/@item.TransactionHistoryId" class="btn btn-warning">Edit</a>
+                  
+                    <buton typeof="button" class="btn btn-danger btn-Delete" data-transaction-id="@item.TransactionHistoryId"
+                           data-id="@item.TransactionHistoryId">Delete</buton>  *@
+                </td>
+                <th scope="row"> @(++count) </th>
+                <td>@item.FromAccountNo</td>
+                <td>@item.ToAccountNo</td>
+                <td>@item.TransactionDate.ToString("dd/MM/yyyy")</td>
+                <td>@item.Amount</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+@* $('.btn-Delete').data('blog-id')
+$('.btn-Delete').data('id') *@
+@section scripts {
+    <script>
+        // alert('');
+        $('.btn-Delete').click(function () {
+
+            let id = $(this).data('transaction-id');
+            
+            //Confirmation
+            Swal.fire({
+                title: "Confirm?",
+                text: "Are you sure to delete",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Yes"
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                 
+                    deleteTransaction(id);
+
+
+                }
+            });
+
+
+
+
+
+
+
+        })
+
+
+        function deleteTransaction(id) {
+
+           
+                let _requestModel = {
+                TransactionHistoryId: id
+                };
+                // if JSON.stringify, need  contentType
+                $.ajax({
+                url: "/TransactionHistory/Delete",
+                data: { transaction: _requestModel },
+                    // data: JSON.stringify(_requestModel),
+                    type: "POST",
+                    // contentType: "application/json;charset=utf-8",
+                    dataType: "json",
+                    success: function (result) {
+                        //console.log(result);
+                        if (result.IsSuccess) {
+
+
+
+                            Swal.fire({
+                                title: "Success",
+                                text: result.Message,
+                                icon: "success",
+
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+
+                                location.href = "/TransactionHistory";
+                                }
+                            });
+
+
+
+                        }
+                        else {
+                            Swal.fire({
+                                title: "Error",
+                                text: result.Message,
+                                icon: "error"
+                            });
+                        }
+
+                    },
+                    error: function (errormessage) {
+                        console.log(errormessage);
+
+                    }
+                });
+
+                }
+    </script>
+}

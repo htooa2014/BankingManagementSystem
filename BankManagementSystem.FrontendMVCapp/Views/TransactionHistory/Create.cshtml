@@ -1,0 +1,108 @@
+﻿@model TransactionHistoryModel
+@* <form action="/Blog/Save" method="post"> *@
+<div>
+    <label class="form-label">From Account No.</label>
+    @* <input type="text" class="form-control" id="FromAccountNo" name="FromAccountNo" /> *@
+    @Html.DropDownListFor(x => x.FromAccountNo,new SelectList(ViewBag.Accounts, "AccountId", "AccountNo"), "Please select account code.")
+</div>
+<div>
+    
+    <label class="form-label">To Account No.</label>
+    @* <input type="text" class="form-control" id="ToAccountNo" name="ToAccountNo" /> *@
+    @Html.DropDownListFor(x => x.ToAccountNo, new SelectList(ViewBag.Accounts, "AccountId", "AccountNo"), "Please select account code.")
+</div>
+<div>
+    <label class="form-label">Transaction Date</label>
+    <input type="text" class="form-control" id="TransactionDate" name="TransactionDate" />
+</div>
+<div>
+    <label class="form-label">Amount</label>
+    <input type="text" class="form-control" id="Amount" name="Amount" />
+</div>
+
+<a href="/TransactionHistory" class="btn btn-dark">Back</a>
+@* change button type from submit to button *@
+@* and set butoon id for ajax *@
+<button type="button" class="btn btn-success" id="btnSave">Save</button>
+@* </form> *@
+@section scripts {
+    <script>
+
+
+        $("#TransactionDate").datepicker({
+            autoHide: true,
+            format: "dd/mm/yyyy"
+        });
+
+        // alert('');
+        $('#btnSave').click(function () {
+            // let fromCode = $('#FromAccountNo').val();
+            // let toCode = $('#ToAccountNo').val();
+            let fromCode = $('#FromAccountNo :selected').text();
+            let toCode = $('#ToAccountNo :selected').text();
+            let transactionDate = $('#TransactionDate').val();
+
+
+            var dateAr = transactionDate.split('/');
+            var newDate = dateAr[2] + '/' + dateAr[1] + '/' + dateAr[0].slice(-2);
+
+            console.log(newDate);
+
+
+            let amount = $('#Amount').val();
+
+            //alert(transactionDate);
+            let _requestModel = {
+                FromAccountNo: fromCode,
+                ToAccountNo: toCode,
+                TransactionDate: newDate,
+                Amount: amount
+                
+            };
+            // if JSON.stringify, need  contentType
+            $.ajax({
+                url: "/TransactionHistory/Save",
+                data: { transaction: _requestModel },
+                // data: JSON.stringify(_requestModel),
+                type: "POST",
+                // contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    //console.log(result);
+                    if (result.IsSuccess) {
+
+
+
+                        Swal.fire({
+                            title: "Success",
+                            text: result.Message,
+                            icon: "success",
+
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+
+                                location.href = "/TransactionHistory";
+                            }
+                        });
+
+
+
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Error",
+                            text: result.Message,
+                            icon: "error"
+                        });
+                    }
+
+                },
+                error: function (errormessage) {
+                    console.log(errormessage);
+
+                }
+            });
+
+        })
+    </script>
+}
