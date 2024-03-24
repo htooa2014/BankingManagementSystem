@@ -1,6 +1,0 @@
-@BankManagementSystem.BackendWebAPI_HostAddress = http://localhost:5211
-
-GET {{BankManagementSystem.BackendWebAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

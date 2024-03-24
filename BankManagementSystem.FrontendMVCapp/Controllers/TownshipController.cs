@@ -184,7 +184,7 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
             item.TownshipCode = township.TownshipCode;
             item.TownshipName = township.TownshipName;
             item.StateCode = township.StateCode;
-            
+
 
             bool result = await UpdateTownshipAPI(id, township);
             string message = result == true ? "Updating Successful." : "Updating Failed.";

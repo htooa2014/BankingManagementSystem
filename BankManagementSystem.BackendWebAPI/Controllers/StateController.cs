@@ -20,7 +20,6 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
         public IActionResult GetStates()
         {
             List<StateModel> states = _db.States.ToList();
-
             return Ok(states);
         }
 
@@ -28,7 +27,7 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult GetState(int id)
         {
-            StateModel state = _db.States.FirstOrDefault(item => item.StateId == id);
+            StateModel state = _db.States.FirstOrDefault(item => item.StateId == id)!;
             if (state == null)
             {
                 return NotFound("No Data Found");
@@ -72,12 +71,10 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
                 return NotFound("No Data Found");
             }
 
-
             _db.Remove(state);
             int result = _db.SaveChanges();
             string message = result > 0 ? "Delete Successful" : "Delete fail";
             return Ok(message);
-
         }
     }
 }

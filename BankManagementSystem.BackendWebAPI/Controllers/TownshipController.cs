@@ -23,7 +23,6 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
             return Ok(townships);
         }
 
-
         [HttpGet("{id}")]
         public IActionResult GetTownships(int id)
         {
@@ -57,7 +56,6 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
             township.TownshipName = townshipUpdate.TownshipName;
             township.StateCode = townshipUpdate.StateCode;
 
-
             int result = _db.SaveChanges();
             string message = result > 0 ? "Update Successful" : "Update fail";
             return Ok(message);
@@ -77,7 +75,6 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
             int result = _db.SaveChanges();
             string message = result > 0 ? "Delete Successful" : "Delete fail";
             return Ok(message);
-
         }
     }
 }

@@ -23,11 +23,10 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
             return Ok(transactionHistories);
         }
 
-
         [HttpGet("{id}")]
         public IActionResult GetTransactionHistory(int id)
         {
-            TransactionHistoryModel transactionHistory = _db.TransactionHistories.FirstOrDefault(item => item.TransactionHistoryId == id);
+            TransactionHistoryModel transactionHistory = _db.TransactionHistories.FirstOrDefault(item => item.TransactionHistoryId == id)!;
             if (transactionHistory == null)
             {
                 return NotFound("No Data Found");
@@ -38,8 +37,6 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
         [HttpPost]
         public IActionResult CreateTransactionHistory(TransactionHistoryModel transactionHistory)
         {
-
-
             _db.TransactionHistories.Add(transactionHistory);
             int result = _db.SaveChanges();
             string message = result > 0 ? "Saving Successful" : "Saving fail";
@@ -60,7 +57,6 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
             transactionHistory.TransactionDate = transactionHistoryUpdate.TransactionDate;
             transactionHistory.Amount = transactionHistoryUpdate.Amount;
 
-
             int result = _db.SaveChanges();
             string message = result > 0 ? "Update Successful" : "Update fail";
             return Ok(message);
@@ -75,12 +71,10 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
                 return NotFound("No Data Found");
             }
 
-
             _db.Remove(transactionHistory);
             int result = _db.SaveChanges();
             string message = result > 0 ? "Delete Successful" : "Delete fail";
             return Ok(message);
-
         }
     }
 }

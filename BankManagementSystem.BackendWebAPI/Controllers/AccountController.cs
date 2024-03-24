@@ -19,15 +19,13 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
         public IActionResult GetAccounts()
         {
             List<AccountModel> accounts = _db.Accounts.ToList();
-
             return Ok(accounts);
         }
-
 
         [HttpGet("{id}")]
         public IActionResult GetAccounts(int id)
         {
-            AccountModel account = _db.Accounts.FirstOrDefault(item => item.AccountId == id);
+            AccountModel account = _db.Accounts.FirstOrDefault(item => item.AccountId == id)!;
             if (account == null)
             {
                 return NotFound("No Data Found");
@@ -38,8 +36,6 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
         [HttpPost]
         public IActionResult CreateAccount(AccountModel account)
         {
-           
-
             _db.Accounts.Add(account);
             int result = _db.SaveChanges();
             string message = result > 0 ? "Saving Successful" : "Saving fail";
@@ -74,12 +70,10 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
                 return NotFound("No Data Found");
             }
 
-
             _db.Remove(account);
             int result = _db.SaveChanges();
             string message = result > 0 ? "Delete Successful" : "Delete fail";
             return Ok(message);
-
         }
     }
 }

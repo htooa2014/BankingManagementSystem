@@ -9,7 +9,7 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
     public class TransactionHistoryController : Controller
     {
         private readonly string _api_url = "https://localhost:7112/api/";
-        private AccountController _accountController=new AccountController();
+        private AccountController _accountController = new AccountController();
 
         public async Task<List<TransactionHistoryModel>> GetTransactionAPI()
         {
@@ -164,13 +164,13 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
 
             }
 
-           
+
 
             ViewBag.FromAccountCode = fromItems;
             ViewBag.ToAccountCode = toItems;
 
 
-            item.TransactionDate =Convert.ToDateTime(item.TransactionDate.ToShortDateString());
+            item.TransactionDate = Convert.ToDateTime(item.TransactionDate.ToShortDateString());
             return View("Edit", item);
         }
 
@@ -226,8 +226,8 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
 
             item.FromAccountNo = transaction.FromAccountNo;
             item.ToAccountNo = transaction.ToAccountNo;
-            item.TransactionDate=transaction.TransactionDate;
-            item.Amount=transaction.Amount;
+            item.TransactionDate = transaction.TransactionDate;
+            item.Amount = transaction.Amount;
 
             bool result = await UpdateTransactionAPI(id, transaction);
             string message = result == true ? "Updating Successful." : "Updating Failed.";
@@ -299,11 +299,11 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
         [HttpPost]
         [ActionName("TransferAccount")]
         public async Task<IActionResult> TransferAccount(TransactionHistoryModel transaction,
-            AccountModel fromAccount,AccountModel toAccount)
+            AccountModel fromAccount, AccountModel toAccount)
         {
             MessageResponseModel model = new MessageResponseModel();
 
-          
+
 
             //From Account Code
             var fromAccountItem = await _accountController.GetAccountByIDAPI(fromAccount.AccountId);
@@ -319,16 +319,16 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
                 return Json(model);
             }
 
-            if(fromAccountItem.Balance< transaction.Amount)
+            if (fromAccountItem.Balance < transaction.Amount)
             {
                 model = new MessageResponseModel()
                 {
                     IsSuccess = false,
-                    Message = "Not enough amount in from account no."+ fromAccountItem.AccountNo
+                    Message = "Not enough amount in from account no." + fromAccountItem.AccountNo
                 };
                 return Json(model);
             }
-            
+
             fromAccountItem.Balance = fromAccountItem.Balance - transaction.Amount;
 
 
@@ -376,10 +376,10 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
 
             string message = result == true ? "Updating Successful." : "Updating Failed.";
 
-           
 
 
-          
+
+
 
 
             model = new MessageResponseModel()
