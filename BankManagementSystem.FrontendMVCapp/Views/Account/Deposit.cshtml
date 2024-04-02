@@ -25,9 +25,13 @@
 
             let _requestModel = {
                 AccountNo: accountNo,              
-                Balance: balance
+                Balance: balance,
+                TransactionStatus:1
+               
 
             };
+
+          
             // if JSON.stringify, need  contentType
             $.ajax({
                 url: "/Account/DepositAccount/" + accountId,

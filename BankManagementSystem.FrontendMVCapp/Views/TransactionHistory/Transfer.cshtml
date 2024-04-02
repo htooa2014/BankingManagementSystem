@@ -53,11 +53,15 @@
             };
 
             let _requestFromAccountModel = {
-                AccountId: fromCode
+                AccountId: fromCode,
+                Balance: amount,
+                TransactionStatus:2
             };
 
             let _requestToAccountModel = {
-                AccountId: toCode
+                AccountId: toCode,
+                Balance: amount,
+                TransactionStatus: 1
             };
             
             // if JSON.stringify, need  contentType

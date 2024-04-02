@@ -18,5 +18,10 @@ namespace BankManagementSystem.BackendWebAPI.Models
         public string CustomerName { get; set; }
 
        public decimal Balance { get; set; }
+
+        //0 - Normal
+        //1 - Deposit
+        //2 - Withdraw
+        public int TransactionStatus {  get; set; }
     }
 }

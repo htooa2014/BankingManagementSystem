@@ -303,7 +303,7 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
         {
             MessageResponseModel model = new MessageResponseModel();
 
-          
+            string message = "";
 
             //From Account Code
             var fromAccountItem = await _accountController.GetAccountByIDAPI(fromAccount.AccountId);
@@ -319,33 +319,82 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
                 return Json(model);
             }
 
-            if(fromAccountItem.Balance< transaction.Amount)
-            {
-                model = new MessageResponseModel()
-                {
-                    IsSuccess = false,
-                    Message = "Not enough amount in from account no."+ fromAccountItem.AccountNo
-                };
-                return Json(model);
-            }
-            
-            fromAccountItem.Balance = fromAccountItem.Balance - transaction.Amount;
-
+            fromAccountItem.Balance = fromAccount.Balance;
+            fromAccountItem.TransactionStatus = fromAccount.TransactionStatus;
 
             bool result2 = await _accountController.UpdateAccountAPI(fromAccountItem.AccountId, fromAccountItem);
 
-
-
-            //To Account Code
-            var toAccountItem = await _accountController.GetAccountByIDAPI(toAccount.AccountId);
-            if (toAccountItem is null)
+            if(result2 == true)
             {
-                // return Redirect("/State");
+                //To Account Code
+                var toAccountItem = await _accountController.GetAccountByIDAPI(toAccount.AccountId);
+                if (toAccountItem is null)
+                {
+                    // return Redirect("/State");
 
+                    model = new MessageResponseModel()
+                    {
+                        IsSuccess = false,
+                        Message = "No Data Found"
+                    };
+                    return Json(model);
+                }
+
+
+
+                toAccountItem.Balance = toAccount.Balance;
+                toAccountItem.TransactionStatus = toAccount.TransactionStatus;
+
+                bool result3 = await _accountController.UpdateAccountAPI(toAccountItem.AccountId, toAccountItem);
+
+               
+
+                if (result3 == true)
+                {
+                    TransactionHistoryModel transactionItem = new TransactionHistoryModel()
+                    {
+                        FromAccountNo = fromAccountItem.AccountNo,
+                        ToAccountNo = toAccountItem.AccountNo,
+                        TransactionDate = transaction.TransactionDate,
+                        Amount = transaction.Amount
+                    };
+
+
+
+
+
+                    bool result = await SaveTransactionAPI(transactionItem);
+
+
+
+
+                     message = result == true ? "Updating Successful." : "Updating Failed.";
+
+                    model = new MessageResponseModel()
+                    {
+                        IsSuccess = result == true,
+                        Message = message
+                    };
+                    return Json(model);
+                }
+                else
+                {
+                     message =  "Updating Failed.";
+                    model = new MessageResponseModel()
+                    {
+                        IsSuccess = false,
+                        Message = message
+                    };
+                    return Json(model);
+                }
+            }
+            else
+            {
+                message = "Updating Failed.";
                 model = new MessageResponseModel()
                 {
                     IsSuccess = false,
-                    Message = "No Data Found"
+                    Message = message
                 };
                 return Json(model);
             }
@@ -353,41 +402,11 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
 
 
 
-            toAccountItem.Balance = toAccountItem.Balance + transaction.Amount;
-            bool result3 = await _accountController.UpdateAccountAPI(toAccountItem.AccountId, toAccountItem);
-
-
-            TransactionHistoryModel transactionItem = new TransactionHistoryModel()
-            {
-                FromAccountNo = fromAccountItem.AccountNo,
-                ToAccountNo = toAccountItem.AccountNo,
-                TransactionDate = transaction.TransactionDate,
-                Amount = transaction.Amount
-            };
 
 
 
-
-
-            bool result = await SaveTransactionAPI(transactionItem);
-
-
-
-
-            string message = result == true ? "Updating Successful." : "Updating Failed.";
 
            
-
-
-          
-
-
-            model = new MessageResponseModel()
-            {
-                IsSuccess = result == true,
-                Message = message
-            };
-            return Json(model);
 
             // return Redirect("/State");
         }

@@ -46,7 +46,7 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
             return Ok(message);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}")]        
         public IActionResult UpdateAccount(int id, AccountModel accountUpdate)
         {
             var account = _db.Accounts.FirstOrDefault(item => item.AccountId == id);
@@ -57,7 +57,27 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
 
             account.AccountNo = accountUpdate.AccountNo;
             account.CustomerName = accountUpdate.CustomerName;
-            account.Balance = accountUpdate.Balance;
+
+            
+            if(accountUpdate.TransactionStatus==0)
+            {
+                account.Balance = accountUpdate.Balance;
+            }
+            else if (accountUpdate.TransactionStatus == 1)
+            {
+                //Plus preivous amount with current amount 
+                account.Balance = account.Balance + accountUpdate.Balance;
+            }
+            else if (accountUpdate.TransactionStatus == 2)
+            {
+                if (account.Balance == 0 || account.Balance < accountUpdate.Balance)
+                {
+                    return NotFound("Balance is not enough.");
+                }
+
+                // preivous amount -current amount
+                account.Balance = account.Balance - accountUpdate.Balance;
+            }
 
 
             int result = _db.SaveChanges();
@@ -81,5 +101,8 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
             return Ok(message);
 
         }
+
+            
+      
     }
 }

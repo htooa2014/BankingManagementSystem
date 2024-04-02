@@ -196,9 +196,9 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
             item.CustomerCode = account.CustomerCode;
             item.CustomerName = account.CustomerName;
             item.Balance = account.Balance;
+            item.TransactionStatus = account.TransactionStatus;
 
-
-            bool result = await UpdateAccountAPI(id, account);
+            bool result = await UpdateAccountAPI(id, item);
             string message = result == true ? "Updating Successful." : "Updating Failed.";
             // _db.SaveChanges();
 
@@ -252,17 +252,12 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
                 return Json(model);
             }
 
-            //item.AccountNo = account.AccountNo;
-            //item.CustomerCode = account.CustomerCode;
-            //item.CustomerName = account.CustomerName;
-
-            
-
-            item.Balance = item.Balance +account.Balance;
-
+            item.AccountNo = account.AccountNo;
+           item.Balance = account.Balance;
+            item.TransactionStatus = account.TransactionStatus;
 
             bool result = await UpdateAccountAPI(id, item);
-            string message = result == true ? "Updating Successful." : "Updating Failed.";
+            string message = result == true ? "Deposit Successful." : "Deposit Failed.";
             // _db.SaveChanges();
 
             model = new MessageResponseModel()
@@ -271,8 +266,6 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
                 Message = message
             };
             return Json(model);
-
-            // return Redirect("/State");
         }
 
         [ActionName("Withdraw")]
@@ -312,25 +305,12 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
                 return Json(model);
             }
 
-            //item.AccountNo = account.AccountNo;
-            //item.CustomerCode = account.CustomerCode;
-            //item.CustomerName = account.CustomerName;
-
-            if(item.Balance==0 || item.Balance<account.Balance)
-            {
-                model = new MessageResponseModel()
-                {
-                    IsSuccess = false,
-                    Message = "Balance is not enough."
-                };
-                return Json(model);
-            }
-
-            item.Balance = item.Balance - account.Balance;
-
+            item.AccountNo = account.AccountNo;
+            item.Balance = account.Balance;
+            item.TransactionStatus = account.TransactionStatus;
 
             bool result = await UpdateAccountAPI(id, item);
-            string message = result == true ? "Updating Successful." : "Updating Failed.";
+            string message = result == true ? "Withdraw Successful." : "Withdraw Failed.";
             // _db.SaveChanges();
 
             model = new MessageResponseModel()
@@ -339,8 +319,6 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
                 Message = message
             };
             return Json(model);
-
-            // return Redirect("/State");
         }
 
 
