@@ -51,9 +51,9 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
 
         }
 
-      
 
-       
+
+
 
 
         public async Task<bool> SaveAccountAPI(AccountModel account)
@@ -115,7 +115,7 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
 
         }
 
-     
+
 
         [ActionName("Index")]
         public async Task<IActionResult> Index()
@@ -126,7 +126,7 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
             return View("Index", accounts);
         }
 
-        
+
 
         [ActionName("Create")]
         public IActionResult AccountCreate()
@@ -191,7 +191,7 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
                 };
                 return Json(model);
             }
-             
+
             item.AccountNo = account.AccountNo;
             item.CustomerCode = account.CustomerCode;
             item.CustomerName = account.CustomerName;
@@ -253,7 +253,7 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
             }
 
             item.AccountNo = account.AccountNo;
-           item.Balance = account.Balance;
+            item.Balance = account.Balance;
             item.TransactionStatus = account.TransactionStatus;
 
             bool result = await UpdateAccountAPI(id, item);
