@@ -57,25 +57,8 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
             account.CustomerName = accountUpdate.CustomerName;
 
 
-            if (accountUpdate.TransactionStatus == 0)
-            {
-                account.Balance = accountUpdate.Balance;
-            }
-            else if (accountUpdate.TransactionStatus == 1)
-            {
-                //Plus preivous amount with current amount 
-                account.Balance = account.Balance + accountUpdate.Balance;
-            }
-            else if (accountUpdate.TransactionStatus == 2)
-            {
-                if (account.Balance == 0 || account.Balance < accountUpdate.Balance)
-                {
-                    return NotFound("Balance is not enough.");
-                }
 
-                // preivous amount -current amount
-                account.Balance = account.Balance - accountUpdate.Balance;
-            }
+            account.Balance = accountUpdate.Balance;
 
 
             int result = _db.SaveChanges();
@@ -99,17 +82,54 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
         }
 
         [Route("Deposit")]
-        [HttpPost]
-        public IActionResult Deposit()
+        [HttpPut]
+        public IActionResult Deposit(int id, AccountModel accountUpdate)
         {
-            return Ok();
+            var account = _db.Accounts.FirstOrDefault(item => item.AccountId == id);
+            if (account == null)
+            {
+                return NotFound("No Data Found");
+            }
+
+            account.AccountNo = accountUpdate.AccountNo;
+            account.CustomerName = accountUpdate.CustomerName;
+
+            //Plus preivous amount with current amount 
+            account.Balance = account.Balance + accountUpdate.Balance;
+
+            int result = _db.SaveChanges();
+            string message = result > 0 ? "Deposit Successful" : "Deposit fail";
+            return Ok(message);
         }
 
         [Route("Withdraw")]
-        [HttpPost]
-        public IActionResult Withdraw()
+        [HttpPut]
+        public IActionResult Withdraw(int id, AccountModel accountUpdate)
         {
-            return Ok();
+            var account = _db.Accounts.FirstOrDefault(item => item.AccountId == id);
+            if (account == null)
+            {
+                return NotFound("No Data Found");
+            }
+
+            account.AccountNo = accountUpdate.AccountNo;
+            account.CustomerName = accountUpdate.CustomerName;
+
+
+
+
+            if (account.Balance == 0 || account.Balance < accountUpdate.Balance)
+            {
+                return NotFound("Balance is not enough.");
+            }
+
+            // preivous amount -current amount
+            account.Balance = account.Balance - accountUpdate.Balance;
+
+
+            int result = _db.SaveChanges();
+            string message = result > 0 ? "Withdraw Successful" : "Withdraw fail";
+            return Ok(message);
         }
     }
 }

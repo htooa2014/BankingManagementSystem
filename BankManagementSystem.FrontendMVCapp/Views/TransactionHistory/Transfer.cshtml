@@ -35,9 +35,13 @@
 
         // alert('');
         $('#btnSave').click(function () {
-             let fromCode = $('#FromAccountNo').val();
-             let toCode = $('#ToAccountNo').val();
-          
+            let fromId = $('#FromAccountNo').val();
+            let toId = $('#ToAccountNo').val();
+            let fromCode = $('#FromAccountNo :selected').text();
+             let toCode = $('#ToAccountNo :selected').text();
+
+            
+
             let transactionDate = $('#TransactionDate').val();
 
             var dateAr = transactionDate.split('/');
@@ -46,28 +50,30 @@
             let amount = $('#Amount').val();
 
             let _requestTransactionModel = {
-               
+                FromAccountNo: fromCode,
+                ToAccountNo: toCode,
                 TransactionDate: newDate,
                 Amount: amount
 
             };
 
-            let _requestFromAccountModel = {
-                AccountId: fromCode,
-                Balance: amount,
-                TransactionStatus:2
+            let _requestFromAccountModel = {               
+                AccountId: fromId,
+                Balance: amount
+              
             };
 
             let _requestToAccountModel = {
-                AccountId: toCode,
-                Balance: amount,
-                TransactionStatus: 1
+                AccountId: toId,
+                Balance: amount
+                
             };
-            
+
             // if JSON.stringify, need  contentType
             $.ajax({
                 url: "/TransactionHistory/TransferAccount/",
-                data: { transaction: _requestTransactionModel,
+                data: {
+                    transaction: _requestTransactionModel,
                     fromAccount: _requestFromAccountModel,
                     toAccount: _requestToAccountModel
                 },

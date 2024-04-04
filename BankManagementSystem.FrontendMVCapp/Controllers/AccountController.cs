@@ -98,6 +98,50 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
         }
 
 
+        public async Task<bool> DepositccountAPI(int id, AccountModel account)
+        {
+
+
+            string josnAccount = JsonConvert.SerializeObject(account);
+
+            HttpClient client = new HttpClient();
+            HttpContent content = new StringContent(josnAccount, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            HttpResponseMessage response = await client.PutAsync(_api_url + "Account/Deposit?id=" + id, content);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+        public async Task<bool> WithdrawAcountAPI(int id, AccountModel account)
+        {
+
+
+            string josnAccount = JsonConvert.SerializeObject(account);
+
+            HttpClient client = new HttpClient();
+            HttpContent content = new StringContent(josnAccount, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            HttpResponseMessage response = await client.PutAsync(_api_url + "Account/Withdraw?id=" + id, content);
+            if (response.IsSuccessStatusCode)
+            {
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+
+     
+
         public async Task<bool> DeleteAccountAPI(int id)
         {
 
@@ -256,7 +300,7 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
             item.Balance = account.Balance;
             item.TransactionStatus = account.TransactionStatus;
 
-            bool result = await UpdateAccountAPI(id, item);
+            bool result = await DepositccountAPI(id, item);
             string message = result == true ? "Deposit Successful." : "Deposit Failed.";
             // _db.SaveChanges();
 
@@ -309,7 +353,7 @@ namespace BankManagementSystem.FrontendMVCapp.Controllers
             item.Balance = account.Balance;
             item.TransactionStatus = account.TransactionStatus;
 
-            bool result = await UpdateAccountAPI(id, item);
+            bool result = await WithdrawAcountAPI(id, item);
             string message = result == true ? "Withdraw Successful." : "Withdraw Failed.";
             // _db.SaveChanges();
 
