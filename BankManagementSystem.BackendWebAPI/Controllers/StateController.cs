@@ -56,7 +56,6 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
 
             state.StateCode = stateUpdate.StateCode;
             state.StateName = stateUpdate.StateName;
-          
 
             int result = _db.SaveChanges();
             string message = result > 0 ? "Update Successful" : "Update fail";
@@ -72,12 +71,10 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
                 return NotFound("No Data Found");
             }
 
-
             _db.Remove(state);
             int result = _db.SaveChanges();
             string message = result > 0 ? "Delete Successful" : "Delete fail";
             return Ok(message);
-
         }
     }
 }

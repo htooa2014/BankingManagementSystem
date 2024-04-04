@@ -77,7 +77,6 @@ namespace BankManagementSystem.BackendWebAPI.Controllers
             int result = _db.SaveChanges();
             string message = result > 0 ? "Delete Successful" : "Delete fail";
             return Ok(message);
-
         }
     }
 }
